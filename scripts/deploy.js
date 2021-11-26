@@ -27,11 +27,11 @@ const main = async () => {
 
   txn = await gameContract.mintCharacterNFT(1);
   await txn.wait();
-  console.log("Minted NFT #1");
+  console.log("Minted NFT #2");
 
   txn = await gameContract.mintCharacterNFT(2);
   await txn.wait();
-  console.log("Minted NFT #1");
+  console.log("Minted NFT #3");
 
 }
 
