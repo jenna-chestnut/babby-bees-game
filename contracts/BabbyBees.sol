@@ -23,14 +23,30 @@ contract BabbyBees is ERC721 {
         uint256 attackDamage;
     }
 
+    struct BossBear {
+        string name;
+        string imageURI;
+        uint256 hp;
+        uint256 maxHp;
+        uint256 attackDamage;
+    }
+
+    BossBear public bossBear;
+
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
     CharacterAttributes[] defaultCharacters;
 
     mapping(uint256 => CharacterAttributes) public nftHolderAttributes;
-
     mapping(address => uint256) public nftHolders;
+
+    event CharacterNFTMinted(
+        address sender,
+        uint256 tokenId,
+        uint256 characterIndex
+    );
+    event AttackComplete(uint256 newBossHp, uint256 newPlayerHp);
 
     constructor(
         string[] memory characterNames,
@@ -38,9 +54,26 @@ contract BabbyBees is ERC721 {
         string[] memory characterSpecialMoves,
         uint256[] memory characterHp,
         uint256[] memory characterArmor,
-        uint256[] memory characterAttachDmg
+        uint256[] memory characterAttachDmg,
+        string memory bossName,
+        string memory bossImageURI,
+        uint256 bossHp,
+        uint256 bossAttackDamage
     ) ERC721("BabbyBees", "BBBS") {
-        console.log("BABBY!!! BEEEEEESSS!!!!");
+        bossBear = BossBear({
+            name: bossName,
+            imageURI: bossImageURI,
+            hp: bossHp,
+            maxHp: bossHp,
+            attackDamage: bossAttackDamage
+        });
+
+        console.log(
+            "Done initializing boss %s w/ HP %s, img %s",
+            bossBear.name,
+            bossBear.hp,
+            bossBear.imageURI
+        );
 
         for (uint256 i = 0; i < characterNames.length; i++) {
             defaultCharacters.push(
@@ -93,6 +126,8 @@ contract BabbyBees is ERC721 {
         nftHolders[msg.sender] = newItemId;
 
         _tokenIds.increment();
+
+        emit CharacterNFTMinted(msg.sender, newItemId, _characterIndex);
     }
 
     function tokenURI(uint256 _tokenId)
@@ -138,5 +173,77 @@ contract BabbyBees is ERC721 {
         );
 
         return output;
+    }
+
+    function attackBoss() public {
+        uint256 nftTokenIdOfPlayer = nftHolders[msg.sender];
+        CharacterAttributes storage player = nftHolderAttributes[
+            nftTokenIdOfPlayer
+        ];
+        console.log(
+            "\nPlayer w/ character %s about to attack. Has %s HP and %s AD",
+            player.name,
+            player.hp,
+            player.attackDamage
+        );
+        console.log(
+            "Boss %s has %s HP and %s AD",
+            bossBear.name,
+            bossBear.hp,
+            bossBear.attackDamage
+        );
+
+        require(
+            player.hp > 0,
+            "Error: character must have HP to attack Big Bad Babby Bear!!"
+        );
+
+        require(
+            bossBear.hp > 0,
+            "Error: Big Bad Babby Bear has been murdered. You can't beat a dead... bear."
+        );
+
+        if (bossBear.hp < player.attackDamage) {
+            bossBear.hp = 0;
+        } else {
+            bossBear.hp -= player.attackDamage;
+        }
+
+        if (player.hp < bossBear.attackDamage) {
+            player.hp = 0;
+        } else {
+            player.hp -= bossBear.attackDamage;
+        }
+
+        console.log("Player attacked boss. New boss hp: %s", bossBear.hp);
+        console.log("Boss attacked player. New player hp: %s\n", player.hp);
+
+        emit AttackComplete(bossBear.hp, player.hp);
+    }
+
+    function checkIsUserHasNFT()
+        public
+        view
+        returns (CharacterAttributes memory)
+    {
+        uint256 nftTokenIdOfPlayer = nftHolders[msg.sender];
+        if (nftTokenIdOfPlayer > 0) {
+            return nftHolderAttributes[nftTokenIdOfPlayer];
+        } else {
+            CharacterAttributes memory emptyStruct;
+            return emptyStruct;
+        }
+    }
+
+    function getAllDefaultCharacters()
+        public
+        view
+        returns (CharacterAttributes[] memory)
+    {
+        return defaultCharacters;
+    }
+
+    function getBossBear() public view returns (BossBear memory) {
+        return bossBear;
     }
 }

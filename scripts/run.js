@@ -15,6 +15,10 @@ const main = async () => {
     [222, 197, 266],
     [22, 12, 66],
     [22, 66, 33],
+    "Big Bad Babby Bear",
+    "https://i.imgur.com/Ihe21p8.gifv",
+    6969,
+    50
   );
   await gameContract.deployed();
   console.log("Contract deployed to: ", gameContract.address);
@@ -24,8 +28,11 @@ const main = async () => {
   txn = await gameContract.mintCharacterNFT(2);
   await txn.wait();
 
-  let returnedTokenUri = await gameContract.tokenURI(1);
-  console.log("Token URI: ", returnedTokenUri);
+  txn = await gameContract.attackBoss();
+  await txn.wait();
+
+  txn = await gameContract.attackBoss();
+  await txn.wait();
 
 }
 

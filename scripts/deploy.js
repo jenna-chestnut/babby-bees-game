@@ -3,9 +3,9 @@ const main = async () => {
   const gameContract = await gameContractFactory.deploy(
     ["BunnyB", "BattyB", "CyberB"],
     [
-      "https://imgur.com/isbBpMi", 
-      "https://imgur.com/Gq9Lzv7", 
-      "https://imgur.com/MHojVuj"
+      "https://imgur.com/isbBpMi.png", 
+      "https://imgur.com/Gq9Lzv7.png", 
+      "https://imgur.com/MHojVuj.png"
     ],
     [
       "Buzzy Hop", 
@@ -15,24 +15,14 @@ const main = async () => {
     [222, 197, 266],
     [22, 12, 66],
     [22, 66, 33],
+    "Big Bad Babby Bear",
+    "https://i.imgur.com/Ihe21p8.gifv",
+    6969,
+    50
   );
+  
   await gameContract.deployed();
   console.log("Contract deployed to: ", gameContract.address);
-
-  let txn;
-
-  txn = await gameContract.mintCharacterNFT(0);
-  await txn.wait();
-  console.log("Minted NFT #1");
-
-  txn = await gameContract.mintCharacterNFT(1);
-  await txn.wait();
-  console.log("Minted NFT #2");
-
-  txn = await gameContract.mintCharacterNFT(2);
-  await txn.wait();
-  console.log("Minted NFT #3");
-
 }
 
 const runMain = async () => {
