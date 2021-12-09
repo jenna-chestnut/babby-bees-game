@@ -54,7 +54,7 @@ contract BabbyBees is ERC721 {
         string[] memory characterSpecialMoves,
         uint256[] memory characterHp,
         uint256[] memory characterArmor,
-        uint256[] memory characterAttachDmg,
+        uint256[] memory characterAttackDmg,
         string memory bossName,
         string memory bossImageURI,
         uint256 bossHp,
@@ -85,7 +85,7 @@ contract BabbyBees is ERC721 {
                     hp: characterHp[i],
                     maxHp: characterHp[i],
                     armor: characterArmor[i],
-                    attackDamage: characterAttachDmg[i]
+                    attackDamage: characterAttackDmg[i]
                 })
             );
 
@@ -221,7 +221,7 @@ contract BabbyBees is ERC721 {
         emit AttackComplete(bossBear.hp, player.hp);
     }
 
-    function checkIsUserHasNFT()
+    function checkIfUserHasNFT()
         public
         view
         returns (CharacterAttributes memory)
