@@ -104,7 +104,7 @@ describe("Babby Bees contract", function () {
       "Buzzy Purr", 
       "Buzzy Develop an AI Capable of Destroying Life as We Know It"
     ],
-    [222, 0, 266],
+    [222, 45, 266],
     [22, 12, 66],
     [22, 66, 33],
     "Big Bad Babby Bear",
@@ -121,6 +121,18 @@ describe("Babby Bees contract", function () {
     await txn.wait();
 
     // write logic here and write new function in our smart contract!!
+
+    txn = await babbyBeesGameContract.connect(addr1).mintCharacterNFT(1);
+    await txn.wait();
+
+    txn = await babbyBeesGameContract.connect(addr1).attackBoss();
+    await txn.wait();
+
+    const rev = await babbyBeesGameContract.revive(addr1.address);
+
+    const userCharacter = await babbyBeesGameContract.connect(addr1).checkIfUserHasNFT();
+
+    expect(userCharacter.hp).to.equal(45);
 
   });
 

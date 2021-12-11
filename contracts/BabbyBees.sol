@@ -246,4 +246,21 @@ contract BabbyBees is ERC721 {
     function getBossBear() public view returns (BossBear memory) {
         return bossBear;
     }
+
+    function revive(address playerAddress) public {
+        uint256 nftTokenIdOfPlayer = nftHolders[playerAddress];
+        require(
+            nftTokenIdOfPlayer > 0,
+            "Error: This wallet address does not have a character."
+        );
+
+        CharacterAttributes memory charAttributes = nftHolderAttributes[
+            nftTokenIdOfPlayer
+        ];
+        require(charAttributes.hp == 0, "Error: Player hp not at 0.");
+
+        charAttributes.hp = defaultCharacters[charAttributes.characterIndex].hp;
+
+        nftHolderAttributes[nftTokenIdOfPlayer] = charAttributes;
+    }
 }
