@@ -257,7 +257,9 @@ contract BabbyBees is ERC721 {
         CharacterAttributes memory charAttributes = nftHolderAttributes[
             nftTokenIdOfPlayer
         ];
+
         require(charAttributes.hp == 0, "Error: Player hp not at 0.");
+        require(msg.sender != playerAddress, "Error: You cannot revive yourself!");
 
         charAttributes.hp = defaultCharacters[charAttributes.characterIndex].hp;
 
