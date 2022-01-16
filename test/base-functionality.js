@@ -45,7 +45,7 @@ describe("Babby Bees contract", function () {
     expect(userCharacter.attackDamage).to.equal(charactersArray[0].attackDamage);
   });
 
-  it("Character NFT attack function", async function () {
+  it("Character NFT attack function & crit chance", async function () {
 
     const gameContractFactory = await ethers.getContractFactory("BabbyBees");
 
@@ -78,10 +78,12 @@ describe("Babby Bees contract", function () {
     await txn.wait();
 
     await babbyBeesGameContract.attackBoss();
+
     const newPlayer = await babbyBeesGameContract.checkIfUserHasNFT();
     const newBoss = await babbyBeesGameContract.getBossBear();
 
-    expect(newBoss.hp).to.equal(boss.hp - charactersArray[0].attackDamage);
+    expect(parseInt(newBoss.hp)).to.be.lessThan(boss.hp - charactersArray[0].attackDamage + 1); // if not crit (char. dmg)
+    expect(parseInt(newBoss.hp)).to.be.greaterThan(boss.hp - charactersArray[0].attackDamage  - 23); // if crit (char dmg + 22)
     expect(newPlayer.hp).to.equal(charactersArray[0].hp - boss.attackDamage);
 
   });

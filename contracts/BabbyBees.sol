@@ -46,7 +46,7 @@ contract BabbyBees is ERC721 {
         uint256 tokenId,
         uint256 characterIndex
     );
-    event AttackComplete(uint256 newBossHp, uint256 newPlayerHp);
+    event AttackComplete(uint256 newBossHp, uint256 newPlayerHp, bool crit);
 
     constructor(
         string[] memory characterNames,
@@ -203,10 +203,21 @@ contract BabbyBees is ERC721 {
             "Error: Big Bad Babby Bear has been murdered. You can't beat a dead... bear."
         );
 
-        if (bossBear.hp < player.attackDamage) {
+        bool isCrit = false;
+        uint nonce = 1;
+        uint256 randomNumber = uint(keccak256(abi.encodePacked(nonce, msg.sender, blockhash(block.number - 1))));
+
+        uint dmg = player.attackDamage;
+
+        if (randomNumber % 11 >= 7) {
+            dmg += 22;
+            isCrit = true;
+        }
+
+        if (bossBear.hp < dmg) {
             bossBear.hp = 0;
         } else {
-            bossBear.hp -= player.attackDamage;
+            bossBear.hp -= dmg;
         }
 
         if (player.hp < bossBear.attackDamage) {
@@ -218,7 +229,7 @@ contract BabbyBees is ERC721 {
         console.log("Player attacked boss. New boss hp: %s", bossBear.hp);
         console.log("Boss attacked player. New player hp: %s\n", player.hp);
 
-        emit AttackComplete(bossBear.hp, player.hp);
+        emit AttackComplete(bossBear.hp, player.hp, isCrit);
     }
 
     function checkIfUserHasNFT()
