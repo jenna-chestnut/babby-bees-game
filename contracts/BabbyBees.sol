@@ -220,10 +220,24 @@ contract BabbyBees is ERC721 {
             bossBear.hp -= dmg;
         }
 
-        if (player.hp < bossBear.attackDamage) {
+        uint bossDmg = bossBear.attackDamage;
+
+        if (player.armor > 0) {
+            if (player.armor < bossDmg) {
+                bossDmg -= player.armor;
+                player.armor = 0;
+            } else {
+                player.armor -= bossDmg;
+                bossDmg = 0;
+            }
+        }
+
+        if (player.hp < bossDmg) {
             player.hp = 0;
         } else {
-            player.hp -= bossBear.attackDamage;
+            if (bossDmg != 0) {
+                player.hp -= bossDmg;
+            }
         }
 
         console.log("Player attacked boss. New boss hp: %s", bossBear.hp);

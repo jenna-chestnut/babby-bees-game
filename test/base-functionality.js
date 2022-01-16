@@ -84,7 +84,10 @@ describe("Babby Bees contract", function () {
 
     expect(parseInt(newBoss.hp)).to.be.lessThan(boss.hp - charactersArray[0].attackDamage + 1); // if not crit (char. dmg)
     expect(parseInt(newBoss.hp)).to.be.greaterThan(boss.hp - charactersArray[0].attackDamage  - 23); // if crit (char dmg + 22)
-    expect(newPlayer.hp).to.equal(charactersArray[0].hp - boss.attackDamage);
+
+    // check armor / boss.attackDamage functionality
+    expect(newPlayer.armor).to.equal(charactersArray[0].armor < boss.attackDamage ? 0 : charactersArray[0].armor - boss.attackDamage);
+    expect(newPlayer.hp).to.equal((charactersArray[0].hp + charactersArray[0].armor) - boss.attackDamage);
 
   });
 
@@ -106,7 +109,7 @@ describe("Babby Bees contract", function () {
       "Buzzy Develop an AI Capable of Destroying Life as We Know It"
     ],
     [222, 45, 266],
-    [22, 12, 66],
+    [22, 0, 66],
     [22, 66, 33],
     "Big Bad Babby Bear",
     "https://i.imgur.com/Ihe21p8.gifv",
@@ -153,7 +156,7 @@ describe("Babby Bees contract", function () {
       "Buzzy Develop an AI Capable of Destroying Life as We Know It"
     ],
     [222, 45, 266],
-    [22, 12, 66],
+    [22, 0, 66],
     [22, 66, 33],
     "Big Bad Babby Bear",
     "https://i.imgur.com/Ihe21p8.gifv",
